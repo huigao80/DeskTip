@@ -121,10 +121,10 @@ class MainMenu(QWidget):
         main = '''
             QLabel{
                 border-radius: 4px ;
-                background-image: url('./img/main.jpg');
+                background-image: url('./img/logo.jpg');
                 }
             QLabel:Hover{
-                background-image: url('./img/main.jpg');
+                background-image: url('./img/logo.jpg');
                 }
 
         '''
