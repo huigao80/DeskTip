@@ -267,9 +267,9 @@ class NoteLabel(QWidget):
         widget1 = pw.getTrashRect() # 获取主widget 的 垃圾箱widget（函数名没有改过来）
         flag = self.isCollide(widget1, self) # 检测两个widget的碰撞
         if flag:
-            self.emit(SIGNAL('collideTrash'), True) # 碰撞就发射collideTrash信号
+            self.emit(SIGNAL('changestyle'), True) # 碰撞就发射collideTrash信号
         else:
-            self.emit(SIGNAL('collideTrash'), False)
+            self.emit(SIGNAL('changestyle'), False)
         # 以下代码用于进行widget的拖拽
         if QMouseEvent.buttons() == Qt.LeftButton:
             self.move(QMouseEvent.globalPos() - self.dragPos)
@@ -286,9 +286,9 @@ class NoteLabel(QWidget):
         if flag:
             self.emit(SIGNAL('collideTrash'), True)
             self.content['finished'] = True
-            self.emit(SIGNAL('OneMemoFinish'), self.content['content'])
-            print "emit meomofinish"
-            self.hide()
+#             self.emit(SIGNAL('OneMemoFinish'), self.content['content'])
+#             print "emit meomofinish"
+#             self.hide()
         else:
             self.emit(SIGNAL('collideTrash'), False)
             self.hide()

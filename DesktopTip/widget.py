@@ -2,6 +2,7 @@
 # -*- coding:utf8 -*-
 import os
 import json
+import sip
 
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import *
@@ -126,6 +127,7 @@ class mainUi(QWidget):
         label = NoteLabel(data, self)
         self.connect(label, SIGNAL("collideTrash"), \
                 self.trashHover)
+        self.connect(label,SIGNAL("changestyle"),self.changestyle)
         self.connect(label, SIGNAL("Editing"), self.editing)
         self.connect(label, SIGNAL("EditFinish"), self.editFinish)
         self.connect(label, SIGNAL("OneMemoFinish"), self.oneMemoFinish)
@@ -167,6 +169,11 @@ class mainUi(QWidget):
         self.centerLayout.insertWidget(allCount-1, label)
         self.setFirstMemo()
 #        self.deadlineReady()
+    def changestyle(self,flag):
+        if flag:
+            self.mainMenu.changeTrashStyleToHover()          
+        else:
+            self.mainMenu.setTrashStyle()
 
     def getData(self):
         date = QDate.currentDate().toString()
@@ -196,8 +203,11 @@ class mainUi(QWidget):
     def trashHover(self, flag):
         if flag:
             self.mainMenu.changeTrashStyleToHover()
+            action=self.sender()
+            sip.delete(action)          
         else:
             self.mainMenu.setTrashStyle()
+
 
     def editFinish(self):
         self.setFirstMemo()
