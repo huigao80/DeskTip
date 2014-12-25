@@ -4,6 +4,7 @@ from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
+
 class FocusEdit(QWidget):
     def __init__(self, parent=None):
         super(FocusEdit, self).__init__(parent)

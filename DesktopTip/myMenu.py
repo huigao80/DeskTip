@@ -6,8 +6,6 @@ from PyQt4.QtGui import *
 import time
 
 
-
-
 class EffectLabel(QLabel):
     def __init__(self, parent=None):
         super(EffectLabel, self).__init__(parent)
