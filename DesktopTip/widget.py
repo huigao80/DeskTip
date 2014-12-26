@@ -2,8 +2,6 @@
 # -*- coding:utf8 -*-
 import os
 import json
-import sip
-
 
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import *
@@ -22,9 +20,8 @@ class mainUi(QWidget):
         self.setObjects()
         self.setEffects()
         self.initProgram()
-
-        self.connect(self.mainMenu, SIGNAL("add"), self.addNewNoteLabel)
         self.connect(self.mainMenu.mainLabel, SIGNAL("mainclick"), self.hidewindow)
+        self.connect(self.mainMenu, SIGNAL("add"), self.addNewNoteLabel)
         self.connect(self.trayIcon, SIGNAL("show"), self.show)
         self.connect(self.timer, SIGNAL("timeout()"), self.deadlineCome)
         self.connect(self.trayIcon, SIGNAL("showMain"), self.myShow)
@@ -39,7 +36,6 @@ class mainUi(QWidget):
         self.centerLayout = QVBoxLayout()
         self.mainMenu = MainMenu()
         self.layout = QHBoxLayout()
-
 
     def setObjects(self):
         self.trayIcon.show()
@@ -128,7 +124,6 @@ class mainUi(QWidget):
         label = NoteLabel(data, self)
         self.connect(label, SIGNAL("collideTrash"), \
                 self.trashHover)
-        self.connect(label,SIGNAL("changestyle"),self.changestyle)
         self.connect(label, SIGNAL("Editing"), self.editing)
         self.connect(label, SIGNAL("EditFinish"), self.editFinish)
         self.connect(label, SIGNAL("OneMemoFinish"), self.oneMemoFinish)
@@ -137,18 +132,6 @@ class mainUi(QWidget):
             self.centerLayout.addWidget(label)
         else:
             self.centerLayout.insertWidget(allCount-1, label)
-#     def addLabel(self, data):
-#         label = NoteLabel(data, self)
-#         self.connect(label, SIGNAL("collideTrash"), \
-#                 self.trashHover)
-#         self.connect(label, SIGNAL("Editing"), self.editing)
-#         self.connect(label, SIGNAL("EditFinish"), self.editFinish)
-#         self.connect(label, SIGNAL("OneMemoFinish"), self.oneMemoFinish)
-#         allCount = self.centerLayout.count()
-#         if allCount == 0:
-#             self.centerLayout.addWidget(label)
-#         else:
-#             self.centerLayout.insertWidget(allCount-1, label)
 
     def addNewNoteLabel(self):
         date = QDate.currentDate().toString()
@@ -170,11 +153,6 @@ class mainUi(QWidget):
         self.centerLayout.insertWidget(allCount-1, label)
         self.setFirstMemo()
 #        self.deadlineReady()
-    def changestyle(self,flag):
-        if flag:
-            self.mainMenu.changeTrashStyleToHover()          
-        else:
-            self.mainMenu.setTrashStyle()
 
     def getData(self):
         date = QDate.currentDate().toString()
@@ -204,11 +182,8 @@ class mainUi(QWidget):
     def trashHover(self, flag):
         if flag:
             self.mainMenu.changeTrashStyleToHover()
-            action=self.sender()
-            sip.delete(action)          
         else:
             self.mainMenu.setTrashStyle()
-
 
     def editFinish(self):
         self.setFirstMemo()
@@ -229,7 +204,6 @@ class mainUi(QWidget):
             self.show()
 
     def mousePressEvent(self, event):
-        
         if event.button() == Qt.LeftButton:
             self.dragPos = event.globalPos() - self.pos()
         if self.isEditing:
@@ -291,10 +265,10 @@ class mainUi(QWidget):
         self.trayIcon.showMessage(u'下面任务已完成', string, 1, 1000)
         self.setFirstMemo()
         self.deadlineReady()
-    
+        
+        
     def hidewindow(self):
         '''hide other widget'''
-
         if self.mainMenu.addBtn.isHidden():
             self.mainMenu.addBtn.show()
             self.mainMenu.trashLabel.show()
@@ -306,38 +280,34 @@ class mainUi(QWidget):
             self.mainMenu.trashLabel.hide()
             for i in range(self.centerLayout.count()-1):
                 self.centerLayout.itemAt(i).widget().hide()
-             
-
-    
-            
 
 
-class mainWidget(QWidget):
-    def __init__(self, parent=None):
-        super(mainWidget, self).__init__(parent)
-        self.initObjects()
-        self.setObjects()
-
-        self.m.show()
-
-    def initObjects(self):
-        self.m = mainUi()
-        self.layout = QHBoxLayout()
-    
-    def setObjects(self):
-        deskRect = self.getDeskSize()
-        selfPoint = QPoint()
-        selfPoint.setX(deskRect.center().x() - selfSize.width()/2)
-        selfPoint.setY(deskRect.center().y() - selfSize.height()/2)
-        self.setGeometry(QRect(selfPoint, selfSize))
-        point = QPoint(0,0)
-        self.setWindowOpacity(0.5)
-        self.layout.addWidget(self.m)
-        self.setLayout(self.layout)
-
-    def getDeskSize(self):
-        rect = QApplication.desktop().availableGeometry()
-        return rect
+# class mainWidget(QWidget):
+#     def __init__(self, parent=None):
+#         super(mainWidget, self).__init__(parent)
+#         self.initObjects()
+#         self.setObjects()
+# 
+#         self.m.show()
+# 
+#     def initObjects(self):
+#         self.m = mainUi()
+#         self.layout = QHBoxLayout()
+#     
+#     def setObjects(self):
+#         deskRect = self.getDeskSize()
+#         selfPoint = QPoint()
+#         selfPoint.setX(deskRect.center().x() - selfSize.width()/2)
+#         selfPoint.setY(deskRect.center().y() - selfSize.height()/2)
+#         self.setGeometry(QRect(selfPoint, selfSize))
+#         point = QPoint(0,0)
+#         self.setWindowOpacity(0.5)
+#         self.layout.addWidget(self.m)
+#         self.setLayout(self.layout)
+# 
+#     def getDeskSize(self):
+#         rect = QApplication.desktop().availableGeometry()
+#         return rect
 
 if __name__ == "__main__":
     import sys

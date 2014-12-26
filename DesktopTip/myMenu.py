@@ -5,7 +5,6 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 import time
 
-
 class EffectLabel(QLabel):
     def __init__(self, parent=None):
         super(EffectLabel, self).__init__(parent)
@@ -60,34 +59,24 @@ class EffectMainLabel(EffectLabel):
             self.emit(SIGNAL("mainclick"))
 #             print "doubleclick"
         self.time_=time_
-        
-
-                
-        
-        
-        
-        
 class MainMenu(QWidget):
     def __init__(self, parent=None):
         super(MainMenu, self).__init__(parent)
         self.initObjects()
         self.setObjects()
+        self.setMainStyle()
         self.setTrashStyle()
         self.setMyStyle()
-        self.setMainStyle()
         self.setMySize()
         pw = self.parentWidget()
         self.addBtn.clicked.connect(self.addBtnClicked)
-#         self.connect(self.mainLabel,SIGNAL("mainclick"),self.hidewindow)
-
 
     def initObjects(self):
         self.trashOpacity = QGraphicsOpacityEffect()
         self.opacity = QGraphicsOpacityEffect()
-        self.trashLabel= EffectLabel()
         self.mainLabel=EffectMainLabel()
         self.addBtn = EffectButton()
-        
+        self.trashLabel= EffectLabel()
         self.layout = QVBoxLayout()
 
     def setObjects(self):
@@ -99,12 +88,28 @@ class MainMenu(QWidget):
         self.setLayout(self.layout)
 
     def setMySize(self):
+        self.mainLabel.setMaximumSize(48, 48)
+        self.mainLabel.setMinimumSize(48, 48) 
         self.trashLabel.setMaximumSize(48, 48)
         self.trashLabel.setMinimumSize(48, 48)
         self.addBtn.setMaximumSize(48, 48)
         self.addBtn.setMinimumSize(48, 48)
-        self.mainLabel.setMaximumSize(48, 48)
-        self.mainLabel.setMinimumSize(48, 48)    
+
+    def setMainStyle(self):
+
+        main = '''
+            QLabel{
+                border-radius: 4px ;
+                background-image: url('./img/main.jpg');
+                }
+            QLabel:Hover{
+                background-image: url('./img/main.jpg');
+                }
+
+        '''
+        self.mainLabel.setStyleSheet(main)
+        self.mainLabel.setEffects()
+
     def setMyStyle(self):
         add = '''
             QPushButton{
@@ -116,20 +121,6 @@ class MainMenu(QWidget):
                 }
         '''
         self.addBtn.setStyleSheet(add)
-    def setMainStyle(self):
-
-        main = '''
-            QLabel{
-                border-radius: 4px ;
-                background-image: url('./img/logo.jpg');
-                }
-            QLabel:Hover{
-                background-image: url('./img/logo.jpg');
-                }
-
-        '''
-        self.mainLabel.setStyleSheet(main)
-        self.mainLabel.setEffects()
         
     def setTrashStyle(self):
         trash = '''
@@ -167,6 +158,4 @@ class MainMenu(QWidget):
         self.trashLabel.changeEffects()
     
     def addBtnClicked(self):
-        print "add signal"
         self.emit(SIGNAL("add"))
-
