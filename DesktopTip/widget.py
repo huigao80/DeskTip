@@ -23,7 +23,7 @@ class mainUi(QWidget):
         self.connect(self.mainMenu.mainLabel, SIGNAL("mainclick"), self.hidewindow)
         self.connect(self.mainMenu, SIGNAL("add"), self.addNewNoteLabel)
         self.connect(self.trayIcon, SIGNAL("show"), self.show)
-        self.connect(self.timer, SIGNAL("timeout()"), self.deadlineCome)
+#         self.connect(self.timer, SIGNAL("timeout()"), self.deadlineCome)
         self.connect(self.trayIcon, SIGNAL("showMain"), self.myShow)
 
 
@@ -71,24 +71,24 @@ class mainUi(QWidget):
             for each in memolist:
                 self.addLabel(each)
             self.setFirstMemo()
-            self.deadlineReady()
+#             self.deadlineReady()
 
-    def deadlineReady(self):
-        '''
-        when the deadline is changed or seted, this function should be called;
-        it calculate the interval between the deadline and the currenttime;
-        '''
-        self.timer.stop()
-        datetime = QDateTime.currentDateTime()
-        interval = QDateTime.fromString(self.firstMemo['deadline']).msecsTo(datetime)
-        if interval <= 0:
-            self.timer.setInterval(-interval)
-            self.timer.start()
-        else:
-            self.deadlineCome()
-            self.timer.stop()
-            self.timer.setInterval(600000)
-            self.timer.start()
+#     def deadlineReady(self):
+#         '''
+#         when the deadline is changed or seted, this function should be called;
+#         it calculate the interval between the deadline and the currenttime;
+#         '''
+#         self.timer.stop()
+#         datetime = QDateTime.currentDateTime()
+#         interval = QDateTime.fromString(self.firstMemo['deadline']).msecsTo(datetime)
+#         if interval <= 0:
+#             self.timer.setInterval(-interval)
+#             self.timer.start()
+#         else:
+#             self.deadlineCome()
+#             self.timer.stop()
+#             self.timer.setInterval(600000)
+#             self.timer.start()
 
     def initProgram(self):
         date = QDate.currentDate().toString()
@@ -135,7 +135,7 @@ class mainUi(QWidget):
 
     def addNewNoteLabel(self):
         date = QDate.currentDate().toString()
-        datetime = QDateTime.currentDateTime().toString()
+        datetime = QDateTime.currentDateTime().toString("yyyy/MM/dd hh:mm:ss")
         allCount = self.centerLayout.count()
         content = {
                 'id': allCount-1,
@@ -187,7 +187,7 @@ class mainUi(QWidget):
 
     def editFinish(self):
         self.setFirstMemo()
-        self.deadlineReady()
+#         self.deadlineReady()
         self.isEditing = False
 
     def editing(self):
@@ -240,10 +240,10 @@ class mainUi(QWidget):
         else:
             return memo2
 
-    def deadlineCome(self):
-        self.trayIcon.showMessage(u"最后期限已到", self.firstMemo['content']\
-                + '\n\n' + u'10分钟后提醒', 1,
-                100)
+#     def deadlineCome(self):
+#         self.trayIcon.showMessage(u"最后期限已到", self.firstMemo['content']\
+#                 + '\n\n' + u'10分钟后提醒', 1,
+#                 100)
 
     def setFirstMemo(self):
         data = self.getData()
@@ -262,9 +262,9 @@ class mainUi(QWidget):
 
     def oneMemoFinish(self, string):
         print "memo receive"
-        self.trayIcon.showMessage(u'下面任务已完成', string, 1, 1000)
+#         self.trayIcon.showMessage(u'下面任务已完成', string, 1, 1000)
         self.setFirstMemo()
-        self.deadlineReady()
+#         self.deadlineReady()
         
         
     def hidewindow(self):
@@ -282,32 +282,6 @@ class mainUi(QWidget):
                 self.centerLayout.itemAt(i).widget().hide()
 
 
-# class mainWidget(QWidget):
-#     def __init__(self, parent=None):
-#         super(mainWidget, self).__init__(parent)
-#         self.initObjects()
-#         self.setObjects()
-# 
-#         self.m.show()
-# 
-#     def initObjects(self):
-#         self.m = mainUi()
-#         self.layout = QHBoxLayout()
-#     
-#     def setObjects(self):
-#         deskRect = self.getDeskSize()
-#         selfPoint = QPoint()
-#         selfPoint.setX(deskRect.center().x() - selfSize.width()/2)
-#         selfPoint.setY(deskRect.center().y() - selfSize.height()/2)
-#         self.setGeometry(QRect(selfPoint, selfSize))
-#         point = QPoint(0,0)
-#         self.setWindowOpacity(0.5)
-#         self.layout.addWidget(self.m)
-#         self.setLayout(self.layout)
-# 
-#     def getDeskSize(self):
-#         rect = QApplication.desktop().availableGeometry()
-#         return rect
 
 if __name__ == "__main__":
     import sys

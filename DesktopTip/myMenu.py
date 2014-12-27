@@ -47,18 +47,22 @@ class EffectButton(QPushButton):
 
     def mouseMoveEvent(self, event):
         pass
+    
+    
 class EffectMainLabel(EffectLabel):
     def __init__(self,parent=None):
         super(EffectMainLabel,self).__init__(parent)
         self.time_=time.clock()
-    
-    def mouseReleaseEvent(self,event):
-        time_=time.clock()
-#         print "last time %s, time %s" % (self.time_,time_)
-        if time_-self.time_<0.3:
-            self.emit(SIGNAL("mainclick"))
-#             print "doubleclick"
-        self.time_=time_
+    def mouseDoubleClickEvent(self,event):
+        self.emit(SIGNAL("mainclick"))
+        
+#     def mouseReleaseEvent(self,event):
+#         time_=time.clock()
+# #         print "last time %s, time %s" % (self.time_,time_)
+#         if time_-self.time_<0.3:
+#             self.emit(SIGNAL("mainclick"))
+# #             print "doubleclick"
+#         self.time_=time_
 class MainMenu(QWidget):
     def __init__(self, parent=None):
         super(MainMenu, self).__init__(parent)
