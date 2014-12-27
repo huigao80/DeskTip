@@ -4,28 +4,26 @@ from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 import sip
-class TextEdit(QTextEdit):
+
+class FocusEdit(QTextEdit):
     def __init__(self, parent=None):
-        super(TextEdit, self).__init__(parent)
-#         self.heightMin=60
-#         self.heightMax=1000
-#         self.document().contentsChanged.connect(self.sizeChange)
+        super(FocusEdit, self).__init__(parent)
+        self.heightMin=60
+        self.heightMax=1000
+        self.document().contentsChanged.connect(self.sizeChange)
         
-#     def sizeChange(self):
-#         docHeight=self.document().size().height()
-# #         print docHeight
-#         if self.heightMin<=docHeight<=self.heightMax:
-#             self.setMaximumHeight(docHeight)
-#             self.emit(SIGNAL("change(int)"),docHeight)
+    def sizeChange(self):
+        docHeight=self.document().size().height()
+#         print docHeight
+        if self.heightMin<=docHeight<=self.heightMax:
+            self.setMaximumHeight(docHeight)
+            self.emit(SIGNAL("change(int)"),docHeight)
+        
     def focusOutEvent(self, event):
-        self.emit(SIGNAL("editFinish"))
-        
-class TextLable(QLabel):
-    def __init__(self, parent=None):
-        super(TextLable, self).__init__(parent)
-        
+        self.emit(SIGNAL("EditFinish"))
+    
     def mouseDoubleClickEvent(self, event):
-        self.emit(SIGNAL("enterEdit"))
+        self.emit(SIGNAL("editing"))
         
 class NoteLabel(QWidget):
     def __init__(self, memodata=None, parent=None):
@@ -36,16 +34,14 @@ class NoteLabel(QWidget):
         self.setStyle()
         self.setEffects()
         self.content = memodata
-        self.connect(self.contentLabel,SIGNAL("enterEdit"),self.editing)
-        self.connect(self.contentEdit, SIGNAL("editFinish"),self.editFinish)
+        self.connect(self.contentEdit,SIGNAL("editing"),self.editing)
+        self.connect(self.contentEdit, SIGNAL("EditFinish"),self.editFinish)
         
     def initObjects(self):
         self.palette = QPalette()
         self.layout = QHBoxLayout()
         self.timeLabel = QLabel()
-        self.contentEdit = TextEdit()
-        self.contentLabel=TextLable()
-        
+        self.contentEdit = FocusEdit()
         
         pix = QPixmap(16, 16)
         pix.fill(Qt.black)
@@ -58,10 +54,8 @@ class NoteLabel(QWidget):
         string = memodata['content']
         if string:
             self.contentEdit.setText(string)
-            self.contentLabel.setText(string)
         else:
             self.contentEdit.setText(u'内容为空')
-            self.contentLabel.setText(u'内容为空')
         self.timeLabel.setText(memodata['deadline'])
         
     def setObjects(self, memodata):
@@ -71,11 +65,11 @@ class NoteLabel(QWidget):
         self.timeLabel.setMargin(10)
 #         self.timeLabel.setPalette(self.palette)
 #         self.timeLabel.setWordWrap(True)
-        self.layout.addWidget(self.contentLabel)
+
         self.layout.addWidget(self.contentEdit)
         self.layout.setContentsMargins(0,0,0,0)
         self.layout.setSpacing(0)
-        self.contentEdit.hide()
+        self.contentEdit.setReadOnly(True)
         self.layout.addSpacing(3)
         self.layout.addSpacing(3)
         self.layout.addWidget(self.timeLabel)
@@ -83,17 +77,10 @@ class NoteLabel(QWidget):
         
     def setMySizePolicy(self):
         self.setMinimumWidth(460)
-        self.timeLabel.setMinimumWidth(50)
+        self.timeLabel.setMinimumWidth(100)
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         self.contentEdit.setMaximumHeight(60)
         self.contentEdit.setMinimumHeight(60)
-        self.contentEdit.setMaximumWidth(300)
-        self.contentEdit.setMinimumWidth(300)
-#         self.contentLabel.setMaximumHeight(60)
-        self.contentLabel.setMinimumHeight(60)
-        
-        self.contentLabel.setMaximumWidth(300)
-        self.contentLabel.setMinimumWidth(300)
         self.contentEdit.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.contentEdit.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.contentEdit.setSizePolicy(QSizePolicy.Fixed,QSizePolicy.Fixed)
@@ -110,8 +97,6 @@ class NoteLabel(QWidget):
                     border: 2px solid #DDDDDD;
                     }
             '''
-
-
             edit = '''
                 QTextEdit{
                     border-top-left-radius: 4px;
@@ -126,7 +111,6 @@ class NoteLabel(QWidget):
     
             self.contentEdit.setStyleSheet(edit)
             self.timeLabel.setStyleSheet(label)
-            self.contentLabel.setStyleSheet(label)
     def setFocus(self):
         self.textEdit.setFocus()
         
@@ -238,13 +222,8 @@ class NoteLabel(QWidget):
         self.timeLabel.setText(datetime)
         
     def editFinish(self):
-        self.contentEdit.hide()
-        text = self.contentEdit.document()
-        self.content['content'] = unicode(text.toPlainText())
-        self.contentLabel.setText(text.toPlainText())
-
-        self.timeUpdate
-        self.contentLabel.show()
+        self.contentEdit.setReadOnly(True)
+        self.timeUpdate()
         
     
     def timeUpdate(self):
@@ -281,6 +260,4 @@ class NoteLabel(QWidget):
         self.deadlineLabel.setFixedHeight(height)
     
     def editing(self):
-        self.contentEdit.setFocus()
-        self.contentEdit.show()
-        self.contentLabel.hide()
+        self.contentEdit.setReadOnly(False)
